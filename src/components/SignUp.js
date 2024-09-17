@@ -12,7 +12,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
 import {useState} from "react";
 import axios from "axios";
 
@@ -35,19 +34,30 @@ const defaultTheme = createTheme();
 
 export default function SignUp() {
     const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [gender, setGender] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        const Token = localStorage.getItem('token');
+        const headers = {
+            Authorization: `Bearer ${Token}`,
+            'Content-Type': 'application/json'
+        }
 
-        const response = await axios.post(process.env.REACT_APP_BASE_URL+'/register',
+        const response = await axios.post(process.env.REACT_APP_BASE_URL+'/api/employee',
             {
                 username,
-                password,
                 firstName,
-                lastName
+                lastName,
+                email,
+                gender
+            },
+            {
+                headers
             }
         );
 
@@ -121,13 +131,26 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                  value={password}
-                  onChange={ (e) => setPassword(e.target.value) }
+                  name="email"
+                  label="email"
+                  type="email"
+                  id="email"
+                  autoComplete="new-email"
+                  value={email}
+                  onChange={ (e) => setEmail(e.target.value) }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="gender"
+                  label="gender"
+                  type="gender"
+                  id="gender"
+                  autoComplete="new-gender"
+                  value={gender}
+                  onChange={ (e) => setGender(e.target.value) }
                 />
               </Grid>
               <Grid item xs={12}>
@@ -145,13 +168,6 @@ export default function SignUp() {
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <Copyright sx={{ mt: 5 }} />
